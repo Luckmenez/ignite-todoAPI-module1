@@ -104,16 +104,15 @@ app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
   const { user } = request;
   const { id } = request.params;
 
-  const TodoExists = users.todos.find( todo => todo.id === id);
+  const itemToDelete = user.todos.findIndex(todo => todo.id === id);
 
-  if(!TodoExists){
-    return response.status(404).json("This Todo doesn't exist");
+  if(itemToDelete === -1){
+    return response.status(404).json({ error: "Todo not found"});
   };
 
+  user.todos.splice(itemToDelete, 1);
 
-  user.todos.splice(id, 1);
-
-  return response.json(user);
+  return response.status(204).json();
 });
 
 module.exports = app;
